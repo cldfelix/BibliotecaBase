@@ -33,6 +33,7 @@ namespace BibliotecaBase {
             }
             catch (Exception ex)
             {
+                
                 Console.WriteLine("Exception Occurred :{0},{1}", ex.Message, ex.StackTrace.ToString());
             }
         
