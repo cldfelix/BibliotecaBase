@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
+using System.Threading.Tasks;
 
-namespace BibliotecaBase {
-    public abstract class Utilities {
+namespace BibliotecaBase
+{
+    public abstract class Utilities
+    {
         /// <summary>
         /// Metodo que executa um arquivo bat
         /// </summary>
@@ -17,7 +19,8 @@ namespace BibliotecaBase {
         /// </code>
         /// </example>
         /// <returns>void</returns>
-        public static void ExecuteBatFileWin(string batDir, string filemane, string args = "") {
+        public static void ExecuteBatFileWin(string batDir, string filemane, string args = "")
+        {
             Process proc = null;
             try
             {
@@ -33,11 +36,10 @@ namespace BibliotecaBase {
             }
             catch (Exception ex)
             {
-                
                 Console.WriteLine("Exception Occurred :{0},{1}", ex.Message, ex.StackTrace.ToString());
             }
-        
         }
+
         /// <summary>
         /// Metodo que executa a leitura de um arquivo csv
         /// </summary>
@@ -46,30 +48,32 @@ namespace BibliotecaBase {
         /// BibliotecaBase.ReadCsv(@"c/data/", ",");
         /// </code>
         /// </example>
-        /// <returns>List<T></returns>
-        public static List<T> ReadCsv<T>(string pathFile, string separador = ",") where T : class {
-
+        /// <returns>List<T>s>
+        /// <returns></summary>
+        public static async Task<List<T>> ReadCsvAsync<T>(string pathFile, string separador = ",") where T : class
+        {
             List<T> ListTraffic = new List<T>();
 
-            try {
-                using (TextReader reader = File.OpenText(pathFile)) {
+            try
+            {
+                using (TextReader reader = File.OpenText(pathFile))
+                {
                     CsvReader csv = new CsvReader(reader);
                     csv.Configuration.Delimiter = separador;
                     csv.Configuration.MissingFieldFound = null;
-                    while (csv.Read()) {
+                    while (await csv.ReadAsync())
+                    {
                         T Record = csv.GetRecord<T>();
                         ListTraffic.Add(Record);
                     }
                 }
             }
-            catch (Exception e) {
-
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message);
-
             }
 
             return ListTraffic;
-
         }
 
         /// <summary>
@@ -81,16 +85,20 @@ namespace BibliotecaBase {
         /// </code>
         /// </example>
         /// <returns>void</returns>
-        public static void WriteCsv<T>(List<T> objs, string filePath, string delimiter = ",", bool manterDadosAnteriores = true) where T : class {
-            try {
+        public static void WriteCsv<T>(List<T> objs, string filePath, string delimiter = ",", bool manterDadosAnteriores = true) where T : class
+        {
+            try
+            {
                 using (MemoryStream stream = new MemoryStream())
-                using (StreamWriter writer = new StreamWriter(filePath, manterDadosAnteriores)) {
+                using (StreamWriter writer = new StreamWriter(filePath, manterDadosAnteriores))
+                {
                     CsvWriter csv = new CsvWriter(writer, new Configuration { HasHeaderRecord = !manterDadosAnteriores });
                     csv.Configuration.Delimiter = delimiter;
                     csv.WriteRecords(objs);
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message);
             }
         }
